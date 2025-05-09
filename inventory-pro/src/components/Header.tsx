@@ -10,19 +10,19 @@ export default function Header() {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="h-10 w-10 relative">
+              <div className="h-30 w-30 relative">
                 <Image 
-                  src="/file.svg"
+                  src="/Logo.svg"
                   alt="InventoryPro"
                   fill
-                  className="object-contain dark:invert"
+                  className="object-contain"
                   priority
                 />
               </div>
             </div>
             <div className="ml-4">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">InventoryPro</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Medical Devices Inventory</p>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Al Nasiriyah Teaching Hospital</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Medical Devices Inventory Protal</p>
             </div>
           </div>
 
