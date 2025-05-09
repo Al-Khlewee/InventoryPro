@@ -216,7 +216,7 @@ export default function DevicesList() {
             onChange={(e) => setDepartmentFilter(e.target.value)}
           >
             <option value="">All Departments</option>
-            {departments.map((dept) => (
+            {(departments || []).map((dept) => (
               <option key={dept} value={dept}>{dept}</option>
             ))}
           </select>
