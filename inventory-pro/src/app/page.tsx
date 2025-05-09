@@ -9,20 +9,20 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'devices'>('dashboard');
   
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-white">
       <Header />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <div className="border-b border-gray-200 dark:border-gray-800">
+          <div className="border-b border-gray-100">
             <nav className="-mb-px flex space-x-8" aria-label="Tabs">
               <button
                 onClick={() => setActiveTab('dashboard')}
                 className={`
                   whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
                   ${activeTab === 'dashboard' 
-                    ? 'border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-700'}
+                    ? 'border-sky-600 text-sky-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}
                 `}
               >
                 Dashboard
@@ -32,8 +32,8 @@ export default function Home() {
                 className={`
                   whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
                   ${activeTab === 'devices' 
-                    ? 'border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-700'}
+                    ? 'border-sky-600 text-sky-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}
                 `}
               >
                 Devices
@@ -51,15 +51,15 @@ export default function Home() {
         </div>
       </main>
       
-      <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-6">
+      <footer className="bg-white border-t border-gray-100 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500">
               &copy; {new Date().getFullYear()} InventoryPro - Medical Devices Inventory Management
             </p>
             <div className="flex items-center mt-4 md:mt-0">
-              <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">Connected to:</span>
-              <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+              <span className="text-sm text-gray-500 mr-2">Connected to:</span>
+              <span className="text-sm font-medium text-sky-600">
                 Firebase Realtime Database
               </span>
             </div>

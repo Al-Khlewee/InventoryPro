@@ -50,22 +50,22 @@ export default function DeviceStatistics({ devices }: DeviceStatisticsProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Department Distribution</h2>
+        <h2 className="text-xl font-bold mb-4 text-gray-800">Department Distribution</h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+          <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-sm">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Department</th>
-                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Device Models</th>
-                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Total Quantity</th>
+                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Department</th>
+                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Device Models</th>
+                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Total Quantity</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="divide-y divide-gray-100">
               {departmentStats.map((stat) => (
-                <tr key={stat.department} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                  <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">{stat.department}</td>
-                  <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">{stat.count}</td>
-                  <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">{stat.totalQuantity}</td>
+                <tr key={stat.department} className="hover:bg-gray-50 transition-colors">
+                  <td className="py-3 px-4 text-sm text-gray-700">{stat.department}</td>
+                  <td className="py-3 px-4 text-sm text-gray-700">{stat.count}</td>
+                  <td className="py-3 px-4 text-sm text-gray-700">{stat.totalQuantity}</td>
                 </tr>
               ))}
             </tbody>
@@ -74,16 +74,16 @@ export default function DeviceStatistics({ devices }: DeviceStatisticsProps) {
       </div>
 
       <div>
-        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Top Manufacturers</h2>
+        <h2 className="text-xl font-bold mb-4 text-gray-800">Top Manufacturers</h2>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {manufacturerStats.map((stat) => (
-            <div key={stat.manufacturer} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md border border-gray-200 dark:border-gray-700">
-              <h3 className="font-semibold text-gray-800 dark:text-white truncate">{stat.manufacturer}</h3>
+            <div key={stat.manufacturer} className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+              <h3 className="font-semibold text-gray-800 truncate">{stat.manufacturer}</h3>
               <div className="mt-2">
-                <div className="text-sm text-gray-600 dark:text-gray-300">
+                <div className="text-sm text-gray-600">
                   <span className="font-medium">Device Models:</span> {stat.count}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">
+                <div className="text-sm text-gray-600">
                   <span className="font-medium">Total Units:</span> {stat.totalQuantity}
                 </div>
               </div>

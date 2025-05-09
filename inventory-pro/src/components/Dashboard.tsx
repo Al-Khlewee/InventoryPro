@@ -22,10 +22,10 @@ export default function Dashboard() {
       <div className="space-y-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-gray-100 dark:bg-gray-800 h-32 rounded-lg"></div>
+            <div key={i} className="bg-gray-50 h-32 rounded-lg"></div>
           ))}
         </div>
-        <div className="bg-gray-100 dark:bg-gray-800 h-64 rounded-lg animate-pulse"></div>
+        <div className="bg-gray-50 h-64 rounded-lg animate-pulse"></div>
       </div>
     );
   }
@@ -61,27 +61,27 @@ export default function Dashboard() {
       </div>
       
       {/* Recent Device Addition */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Recently Added Devices</h2>
+      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+        <h2 className="text-xl font-bold mb-4 text-gray-800">Recently Added Devices</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full">
-            <thead className="border-b dark:border-gray-700">
+            <thead className="border-b border-gray-100">
               <tr>
-                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Device Name</th>
-                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Department</th>
-                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Date Received</th>
+                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Device Name</th>
+                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Department</th>
+                <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Date Received</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="divide-y divide-gray-100">
               {/* Sort by date received (newest first) and take only the first 5 */}
               {[...devices]
                 .sort((a, b) => new Date(b.dateReceived).getTime() - new Date(a.dateReceived).getTime())
                 .slice(0, 5)
                 .map((device) => (
-                  <tr key={device.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">{device.deviceName}</td>
-                    <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">{device.department}</td>
-                    <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">{device.dateReceived}</td>
+                  <tr key={device.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-3 px-4 text-sm text-gray-700">{device.deviceName}</td>
+                    <td className="py-3 px-4 text-sm text-gray-700">{device.department}</td>
+                    <td className="py-3 px-4 text-sm text-gray-700">{device.dateReceived}</td>
                   </tr>
                 ))}
             </tbody>
@@ -104,10 +104,10 @@ interface DashboardCardProps {
 
 function DashboardCard({ title, value, description, color }: DashboardCardProps) {
   const colorClasses = {
-    blue: 'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300',
-    green: 'bg-green-50 border-green-200 text-green-800 dark:bg-green-900/30 dark:border-green-800 dark:text-green-300',
-    purple: 'bg-purple-50 border-purple-200 text-purple-800 dark:bg-purple-900/30 dark:border-purple-800 dark:text-purple-300',
-    amber: 'bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-300',
+    blue: 'bg-sky-50 border-sky-100 text-sky-700',
+    green: 'bg-emerald-50 border-emerald-100 text-emerald-700',
+    purple: 'bg-violet-50 border-violet-100 text-violet-700',
+    amber: 'bg-amber-50 border-amber-100 text-amber-700',
   };
 
   return (

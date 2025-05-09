@@ -15,7 +15,13 @@ export default function DevicesList() {
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [currentPage, setCurrentPage] = useState(1);
   const devicesPerPage = 9;
-  
+
+  // Pagination button styles
+  const paginationButtonStyles = {
+    active: "relative inline-flex items-center px-4 py-2 border text-sm font-medium bg-sky-50 border-sky-500 text-sky-600",
+    inactive: "relative inline-flex items-center px-4 py-2 border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+  };
+
   // Extract unique departments for filter dropdown
   const departments = useMemo<string[]>(() => {
     return Array.from(new Set(devices.map(device => device.department))).sort();
@@ -80,7 +86,7 @@ export default function DevicesList() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-500"></div>
       </div>
     );
   }
@@ -116,8 +122,8 @@ export default function DevicesList() {
           <button
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium 
-              ${currentPage === 1 ? 'text-gray-300 dark:text-gray-600' : 'text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300'}`}
+            className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-200 bg-white text-sm font-medium 
+              ${currentPage === 1 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'}`}
           >
             <span className="sr-only">Previous</span>
             &larr;
@@ -127,12 +133,12 @@ export default function DevicesList() {
             <>
               <button
                 onClick={() => setCurrentPage(1)}
-                className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300"
+                className={paginationButtonStyles.inactive}
               >
                 1
               </button>
               {startPage > 2 && (
-                <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
+                <span className="relative inline-flex items-center px-4 py-2 border border-gray-200 bg-white text-sm font-medium text-gray-700">
                   ...
                 </span>
               )}
@@ -143,10 +149,7 @@ export default function DevicesList() {
             <button
               key={number}
               onClick={() => setCurrentPage(number)}
-              className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium
-                ${number === currentPage
-                  ? 'bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:border-blue-500 dark:text-blue-400'
-                  : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300'}`}
+              className={number === currentPage ? paginationButtonStyles.active : paginationButtonStyles.inactive}
             >
               {number}
             </button>
@@ -155,13 +158,13 @@ export default function DevicesList() {
           {endPage < totalPages && (
             <>
               {endPage < totalPages - 1 && (
-                <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
+                <span className="relative inline-flex items-center px-4 py-2 border border-gray-200 bg-white text-sm font-medium text-gray-700">
                   ...
                 </span>
               )}
               <button
                 onClick={() => setCurrentPage(totalPages)}
-                className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300"
+                className={paginationButtonStyles.inactive}
               >
                 {totalPages}
               </button>
@@ -171,8 +174,8 @@ export default function DevicesList() {
           <button
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium 
-              ${currentPage === totalPages ? 'text-gray-300 dark:text-gray-600' : 'text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300'}`}
+            className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-200 bg-white text-sm font-medium 
+              ${currentPage === totalPages ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'}`}
           >
             <span className="sr-only">Next</span>
             &rarr;
@@ -186,7 +189,7 @@ export default function DevicesList() {
   const SortButton = ({ field, label }: { field: SortField; label: string }) => (
     <button
       onClick={() => handleSort(field)}
-      className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+      className="flex items-center text-sm font-medium text-gray-700 hover:text-sky-600"
     >
       {label}
       {sortField === field && (
@@ -204,14 +207,14 @@ export default function DevicesList() {
           <input
             type="text"
             placeholder="Search devices..."
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="md:w-64">
           <select
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 dark:text-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white"
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
           >
@@ -224,8 +227,8 @@ export default function DevicesList() {
       </div>
 
       {/* Sort options */}
-      <div className="flex flex-wrap gap-4 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-        <div className="text-sm text-gray-500 dark:text-gray-400">Sort by:</div>
+      <div className="flex flex-wrap gap-4 bg-gray-50 p-3 rounded-lg">
+        <div className="text-sm text-gray-500">Sort by:</div>
         <SortButton field="deviceName" label="Device Name" />
         <SortButton field="manufacturer" label="Manufacturer" />
         <SortButton field="department" label="Department" />
@@ -234,7 +237,7 @@ export default function DevicesList() {
 
       {sortedDevices.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">No devices found</p>
+          <p className="text-gray-500">No devices found</p>
         </div>
       ) : (
         <>
@@ -248,8 +251,8 @@ export default function DevicesList() {
         </>
       )}
       
-      <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
-        <p className="text-gray-500 dark:text-gray-400 text-sm">
+      <div className="bg-gray-50 rounded-lg p-4">
+        <p className="text-gray-500 text-sm">
           Showing {Math.min((currentPage - 1) * devicesPerPage + 1, sortedDevices.length)}-{Math.min(currentPage * devicesPerPage, sortedDevices.length)} of {sortedDevices.length} devices (filtered from {devices.length} total)
         </p>
       </div>
