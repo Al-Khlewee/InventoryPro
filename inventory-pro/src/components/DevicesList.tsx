@@ -17,7 +17,7 @@ export default function DevicesList() {
   const devicesPerPage = 9;
   
   // Extract unique departments for filter dropdown
-  const departments = useMemo(() => {
+  const departments = useMemo<string[]>(() => {
     return Array.from(new Set(devices.map(device => device.department))).sort();
   }, [devices]);
   
@@ -216,7 +216,7 @@ export default function DevicesList() {
             onChange={(e) => setDepartmentFilter(e.target.value)}
           >
             <option value="">All Departments</option>
-            {(departments || []).map((dept) => (
+            {departments.map((dept) => (
               <option key={dept} value={dept}>{dept}</option>
             ))}
           </select>
