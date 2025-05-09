@@ -4,9 +4,10 @@ import { MedicalDevice } from '../types/medical-device';
 interface DeviceDetailsProps {
   device: MedicalDevice;
   onClose: () => void;
+  onEdit?: (device: MedicalDevice) => void;
 }
 
-export default function DeviceDetails({ device, onClose }: DeviceDetailsProps) {
+export default function DeviceDetails({ device, onClose, onEdit }: DeviceDetailsProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -120,7 +121,21 @@ export default function DeviceDetails({ device, onClose }: DeviceDetailsProps) {
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+          <div className="mt-8 pt-6 border-t border-gray-100 flex justify-between">
+            {onEdit && (
+              <button
+                onClick={() => {
+                  onEdit(device);
+                  onClose();
+                }}
+                className="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700 transition-colors flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+                Edit Device
+              </button>
+            )}
             <button
               onClick={onClose}
               className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"

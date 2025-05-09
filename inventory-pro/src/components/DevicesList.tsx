@@ -2,18 +2,21 @@ import React, { useState, useMemo } from 'react';
 import DeviceCard from './DeviceCard';
 import { useMedicalDevices } from '../hooks/useMedicalDevices';
 import { MedicalDevice } from '../types/medical-device';
+import DeviceFormModal from './DeviceFormModal';
 
 // Type for sortable fields
 type SortField = 'deviceName' | 'manufacturer' | 'dateReceived' | 'department';
 type SortOrder = 'asc' | 'desc';
 
 export default function DevicesList() {
-  const { devices, loading, error } = useMedicalDevices();
+  const { devices, loading, error, addDevice, editDevice, deleteDevice, isSubmitting } = useMedicalDevices();
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState<string>('');
   const [sortField, setSortField] = useState<SortField>('deviceName');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [currentPage, setCurrentPage] = useState(1);
+  const [deviceToEdit, setDeviceToEdit] = useState<MedicalDevice | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const devicesPerPage = 9;
 
   // Pagination button styles
@@ -81,6 +84,26 @@ export default function DevicesList() {
       setSortField(field);
       setSortOrder('asc');
     }
+  };
+
+  // Open edit modal
+  const handleEditDevice = (device: MedicalDevice) => {
+    setDeviceToEdit(device);
+  };
+
+  // Handle submit for add/edit
+  const handleSubmit = async (deviceData: Partial<MedicalDevice>) => {
+    if (deviceToEdit) {
+      return await editDevice({ ...deviceToEdit, ...deviceData });
+    } else {
+      return await addDevice(deviceData as Omit<MedicalDevice, 'id' | 'originalId'>);
+    }
+  };
+
+  // Close modal and reset state
+  const handleCloseModal = () => {
+    setDeviceToEdit(null);
+    setIsAddModalOpen(false);
   };
 
   if (loading) {
@@ -202,6 +225,19 @@ export default function DevicesList() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-gray-800">Medical Devices</h1>
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700 transition-colors flex items-center"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Add New Device
+        </button>
+      </div>
+
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1">
           <input
@@ -243,7 +279,12 @@ export default function DevicesList() {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentDevices.map((device) => (
-              <DeviceCard key={device.id} device={device} />
+              <DeviceCard 
+                key={device.id} 
+                device={device} 
+                onEdit={() => handleEditDevice(device)}
+                onDelete={deleteDevice} 
+              />
             ))}
           </div>
           
@@ -256,6 +297,16 @@ export default function DevicesList() {
           Showing {Math.min((currentPage - 1) * devicesPerPage + 1, sortedDevices.length)}-{Math.min(currentPage * devicesPerPage, sortedDevices.length)} of {sortedDevices.length} devices (filtered from {devices.length} total)
         </p>
       </div>
+
+      {/* Add/Edit Device Modal */}
+      {(deviceToEdit || isAddModalOpen) && (
+        <DeviceFormModal
+          device={deviceToEdit || undefined}
+          onSubmit={handleSubmit}
+          onClose={handleCloseModal}
+          isSubmitting={isSubmitting}
+        />
+      )}
     </div>
   );
 }
