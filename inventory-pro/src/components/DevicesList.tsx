@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import DeviceCard from './DeviceCard';
+import GroupedDeviceCard from './GroupedDeviceCard';
 import { useMedicalDevices } from '../hooks/useMedicalDevices';
+import { useGroupedDevices, GroupedDevice } from '../hooks/useGroupedDevices';
 import { MedicalDevice } from '../types/medical-device';
 import DeviceFormModal from './DeviceFormModal';
 
@@ -17,6 +19,7 @@ export default function DevicesList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [deviceToEdit, setDeviceToEdit] = useState<MedicalDevice | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'grouped' | 'individual'>('grouped');
   const devicesPerPage = 9;
 
   // Pagination button styles
@@ -27,7 +30,7 @@ export default function DevicesList() {
 
   // Extract unique departments for filter dropdown
   const departments = useMemo<string[]>(() => {
-    return Array.from(new Set(devices.map(device => device.department))).sort();
+    return Array.from(new Set(devices.map(device => device.department || '').filter(Boolean))).sort();
   }, [devices]);
   
   // Filter devices based on search term and department
@@ -46,35 +49,59 @@ export default function DevicesList() {
     });
   }, [devices, searchTerm, departmentFilter]);
 
-  // Sort devices
-  const sortedDevices = useMemo(() => {
-    return [...filteredDevices].sort((a, b) => {
-      // Special handling for date field
-      if (sortField === 'dateReceived') {
-        const dateA = new Date(a.dateReceived).getTime();
-        const dateB = new Date(b.dateReceived).getTime();
-        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-      }
-      
-      // For string comparisons
-      const valueA = String(a[sortField]);
-      const valueB = String(b[sortField]);
-      
-      return sortOrder === 'asc' 
-        ? valueA.localeCompare(valueB)
-        : valueB.localeCompare(valueA);
-    });
-  }, [filteredDevices, sortField, sortOrder]);
+  // Get grouped devices
+  const { groupedDevices } = useGroupedDevices(filteredDevices);
 
-  // Get current page devices
-  const currentDevices = useMemo(() => {
-    const indexOfLastDevice = currentPage * devicesPerPage;
-    const indexOfFirstDevice = indexOfLastDevice - devicesPerPage;
-    return sortedDevices.slice(indexOfFirstDevice, indexOfLastDevice);
-  }, [sortedDevices, currentPage]);
+  // Sort devices or grouped devices
+  const sortedItems = useMemo(() => {
+    if (viewMode === 'grouped') {
+      // Sort grouped devices
+      return [...groupedDevices].sort((a, b) => {
+        // Special handling for date field
+        if (sortField === 'dateReceived') {
+          const dateA = new Date(a.dateReceived).getTime();
+          const dateB = new Date(b.dateReceived).getTime();
+          return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        }
+        
+        // For string comparisons
+        const valueA = String(a[sortField]);
+        const valueB = String(b[sortField]);
+        
+        return sortOrder === 'asc' 
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      });
+    } else {
+      // Sort individual devices
+      return [...filteredDevices].sort((a, b) => {
+        // Special handling for date field
+        if (sortField === 'dateReceived') {
+          const dateA = new Date(a.dateReceived).getTime();
+          const dateB = new Date(b.dateReceived).getTime();
+          return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        }
+        
+        // For string comparisons
+        const valueA = String(a[sortField]);
+        const valueB = String(b[sortField]);
+        
+        return sortOrder === 'asc' 
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      });
+    }
+  }, [viewMode, groupedDevices, filteredDevices, sortField, sortOrder]);
+
+  // Get current page items
+  const currentItems = useMemo(() => {
+    const indexOfLastItem = currentPage * devicesPerPage;
+    const indexOfFirstItem = indexOfLastItem - devicesPerPage;
+    return sortedItems.slice(indexOfFirstItem, indexOfLastItem);
+  }, [sortedItems, currentPage]);
 
   // Calculate total pages
-  const totalPages = Math.ceil(sortedDevices.length / devicesPerPage);
+  const totalPages = Math.ceil(sortedItems.length / devicesPerPage);
 
   // Handle sort toggle
   const handleSort = (field: SortField) => {
@@ -89,6 +116,12 @@ export default function DevicesList() {
   // Open edit modal
   const handleEditDevice = (device: MedicalDevice) => {
     setDeviceToEdit(device);
+  };
+
+  // Toggle view mode between grouped and individual
+  const toggleViewMode = () => {
+    setViewMode(prev => prev === 'grouped' ? 'individual' : 'grouped');
+    setCurrentPage(1); // Reset to first page when changing view
   };
 
   // Handle submit for add/edit
@@ -223,6 +256,17 @@ export default function DevicesList() {
     </button>
   );
 
+  const getDeviceCountSummary = () => {
+    if (viewMode === 'grouped') {
+      const totalUniqueDeviceTypes = groupedDevices.length;
+      const totalIndividualDevices = filteredDevices.length;
+      const totalDeviceQuantity = filteredDevices.reduce((sum, device) => sum + device.quantity, 0);
+      
+      return `${totalUniqueDeviceTypes} device types (${totalIndividualDevices} units, ${totalDeviceQuantity} total quantity)`;
+    }
+    return `${filteredDevices.length} devices (filtered from ${devices.length} total)`;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -254,11 +298,26 @@ export default function DevicesList() {
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
           >
-            <option value="">All Departments</option>
-            {departments.map((dept) => (
-              <option key={dept} value={dept}>{dept}</option>
+            <option key="all" value="">All Departments</option>
+            {departments.map((dept, index) => (
+              <option key={`dept-${index}-${dept}`} value={dept}>{dept}</option>
             ))}
           </select>
+        </div>
+        <div className="md:w-48">
+          <button
+            onClick={toggleViewMode}
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 flex items-center justify-center"
+          >
+            <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              {viewMode === 'grouped' ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              )}
+            </svg>
+            {viewMode === 'grouped' ? 'Show Individual' : 'Group by Type'}
+          </button>
         </div>
       </div>
 
@@ -271,21 +330,31 @@ export default function DevicesList() {
         <SortButton field="dateReceived" label="Date Received" />
       </div>
 
-      {sortedDevices.length === 0 ? (
+      {sortedItems.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500">No devices found</p>
         </div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentDevices.map((device) => (
-              <DeviceCard 
-                key={device.id} 
-                device={device} 
-                onEdit={() => handleEditDevice(device)}
-                onDelete={deleteDevice} 
-              />
-            ))}
+            {viewMode === 'grouped' 
+              ? (currentItems as GroupedDevice[]).map((groupedDevice) => (
+                <GroupedDeviceCard 
+                  key={groupedDevice.key} 
+                  groupedDevice={groupedDevice}
+                  onEdit={handleEditDevice} 
+                  onDelete={deleteDevice}
+                />
+              ))
+              : (currentItems as MedicalDevice[]).map((device) => (
+                <DeviceCard 
+                  key={device.id} 
+                  device={device} 
+                  onEdit={handleEditDevice}
+                  onDelete={deleteDevice} 
+                />
+              ))
+            }
           </div>
           
           {totalPages > 1 && renderPagination()}
@@ -294,7 +363,7 @@ export default function DevicesList() {
       
       <div className="bg-gray-50 rounded-lg p-4">
         <p className="text-gray-500 text-sm">
-          Showing {Math.min((currentPage - 1) * devicesPerPage + 1, sortedDevices.length)}-{Math.min(currentPage * devicesPerPage, sortedDevices.length)} of {sortedDevices.length} devices (filtered from {devices.length} total)
+          Showing {Math.min((currentPage - 1) * devicesPerPage + 1, sortedItems.length)}-{Math.min(currentPage * devicesPerPage, sortedItems.length)} of {getDeviceCountSummary()}
         </p>
       </div>
 
