@@ -14,6 +14,7 @@ interface GroupedDevice {
   itmCode: string;
   totalQuantity: number;
   devices: MedicalDevice[];
+  imageUrl?: string | null;
 }
 
 export function useGroupedDevices(devices: MedicalDevice[]) {
@@ -51,7 +52,8 @@ export function useGroupedDevices(devices: MedicalDevice[]) {
         countryOfOrigin: firstDevice.countryOfOrigin,
         itmCode: firstDevice.itmCode,
         totalQuantity,
-        devices: devicesList
+        devices: devicesList,
+        imageUrl: firstDevice.imageUrl
       };
     });
   }, [devices]);

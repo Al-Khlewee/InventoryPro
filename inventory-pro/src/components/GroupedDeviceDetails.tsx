@@ -43,6 +43,19 @@ export default function GroupedDeviceDetails({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
+              {/* Device Image */}
+              {(groupedDevice.imageUrl || devices[0]?.imageUrl) && (
+                <div className="mb-6">
+                  <div className="aspect-w-16 aspect-h-9 overflow-hidden rounded-lg shadow-sm border border-gray-200">
+                    <img 
+                      src={groupedDevice.imageUrl || devices[0]?.imageUrl || '/file.svg'} 
+                      alt={deviceName}
+                      className="object-contain w-full h-full" 
+                    />
+                  </div>
+                </div>
+              )}
+              
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <h3 className="text-lg font-medium mb-3 text-gray-800">Device Information</h3>
                 <div className="grid grid-cols-2 gap-3">
