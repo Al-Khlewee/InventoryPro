@@ -1,4 +1,7 @@
-import React, { useState, useMemo } from 'react';
+const fs = require('fs');
+const path = require('path');
+
+const newContent = `import React, { useState, useMemo } from 'react';
 import GroupedDeviceCard from './GroupedDeviceCard';
 import { useMedicalDevices } from '../hooks/useMedicalDevices';
 import { useGroupedDevices, GroupedDevice } from '../hooks/useGroupedDevices';
@@ -149,8 +152,8 @@ export default function DevicesList() {
           <button
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-200 bg-white text-sm font-medium 
-              ${currentPage === 1 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'}`}
+            className={\`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-200 bg-white text-sm font-medium 
+              \${currentPage === 1 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'}\`}
           >
             <span className="sr-only">Previous</span>
             &larr;
@@ -201,8 +204,8 @@ export default function DevicesList() {
           <button
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-200 bg-white text-sm font-medium 
-              ${currentPage === totalPages ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'}`}
+            className={\`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-200 bg-white text-sm font-medium 
+              \${currentPage === totalPages ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'}\`}
           >
             <span className="sr-only">Next</span>
             &rarr;
@@ -232,7 +235,7 @@ export default function DevicesList() {
     const totalIndividualDevices = filteredDevices.length;
     const totalDeviceQuantity = filteredDevices.reduce((sum, device) => sum + device.quantity, 0);
     
-    return `${totalUniqueDeviceTypes} device types (${totalIndividualDevices} units, ${totalDeviceQuantity} total quantity)`;
+    return \`\${totalUniqueDeviceTypes} device types (\${totalIndividualDevices} units, \${totalDeviceQuantity} total quantity)\`;
   };
 
   return (
@@ -268,7 +271,7 @@ export default function DevicesList() {
           >
             <option key="all" value="">All Departments</option>
             {departments.map((dept, index) => (
-              <option key={`dept-${index}-${dept}`} value={dept}>{dept}</option>
+              <option key={\`dept-\${index}-\${dept}\`} value={dept}>{dept}</option>
             ))}
           </select>
         </div>
@@ -321,4 +324,13 @@ export default function DevicesList() {
       )}
     </div>
   );
+}`;
+
+const filePath = path.join(process.cwd(), 'src', 'components', 'DevicesList.tsx');
+
+try {
+  fs.writeFileSync(filePath, newContent);
+  console.log('Successfully updated DevicesList.tsx to remove individual view');
+} catch (error) {
+  console.error('Error updating file:', error);
 }

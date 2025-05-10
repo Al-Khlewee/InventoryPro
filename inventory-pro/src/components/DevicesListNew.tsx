@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import GroupedDeviceCard from './GroupedDeviceCard';
 import { useMedicalDevices } from '../hooks/useMedicalDevices';
 import { useGroupedDevices, GroupedDevice } from '../hooks/useGroupedDevices';
 import { MedicalDevice } from '../types/medical-device';
 import DeviceFormModal from './DeviceFormModal';
+import GroupedDeviceCard from './GroupedDeviceCard';
 
 // Type for sortable fields
 type SortField = 'deviceName' | 'manufacturer' | 'dateReceived' | 'department';
