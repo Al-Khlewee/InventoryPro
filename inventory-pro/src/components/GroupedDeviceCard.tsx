@@ -22,12 +22,8 @@ export default function GroupedDeviceCard({
     model, 
     manufacturer, 
     totalQuantity, 
-    department, 
     devices
   } = groupedDevice;
-
-  // Get the first device's serial number to show as a sample
-  const sampleSerialNumber = devices[0]?.serialNumber;
 
   return (
     <>
@@ -62,9 +58,6 @@ export default function GroupedDeviceCard({
           <div className="text-sm text-gray-600">
             <span className="font-medium">Manufacturer:</span> {manufacturer}
           </div>
-          <div className="text-sm text-gray-600">
-            <span className="font-medium">S/N Sample:</span> {sampleSerialNumber ? `${sampleSerialNumber.substring(0, 12)}...` : 'N/A'}
-          </div>
         </div>
 
         {isDetailsVisible && (
@@ -90,10 +83,7 @@ export default function GroupedDeviceCard({
           </div>
         )}
 
-        <div className="flex justify-between items-center">
-          <div className="bg-sky-50 text-sky-700 px-3 py-1 rounded-full text-xs font-medium">
-            {department}
-          </div>
+        <div className="flex justify-end items-center">
           <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium">
             Total Qty: {totalQuantity}
           </div>
