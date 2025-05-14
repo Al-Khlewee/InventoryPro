@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '../../../../lib/firebase';
 import { ref, get, update } from 'firebase/database';
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, context: { params: { id: string } }) {
   try {
-    const deviceId = params.id;
+    const deviceId = context.params.id;
     const updateData = await request.json();
 
     // Find the device in Firebase by ID
@@ -44,7 +44,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       );
     }
   } catch (error) {
-    console.error(`Error updating device ${params.id}:`, error);
+    console.error(`Error updating device ${context.params.id}:`, error);
     return NextResponse.json(
       { error: 'Failed to update device' },
       { status: 500 }
@@ -52,9 +52,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, context: { params: { id: string } }) {
   try {
-    const deviceId = params.id;
+    const deviceId = context.params.id;
     
     // Find the device in Firebase by ID
     const devicesRef = ref(db, 'medical_devices');
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       );
     }
   } catch (error: any) {
-    console.error(`Error fetching device ${params.id}:`, error);
+    console.error(`Error fetching device ${context.params.id}:`, error);
     return NextResponse.json(
       { error: 'Failed to fetch device' },
       { status: 500 }
